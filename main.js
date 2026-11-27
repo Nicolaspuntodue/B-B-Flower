@@ -254,3 +254,6 @@ form.addEventListener('submit', e => {
   f.card.value = f.cvc.value = f.exp.value = ''; // never keep card data around
   go(2);
 });
+
+// balcony backdrop: slow zoom + drift while the flower blooms
+if (!reduced) gsap.fromTo('.hero-bg', { scale: 1.12 }, { scale: 1, yPercent: 6, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom bottom', scrub: true } });

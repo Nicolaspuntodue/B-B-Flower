@@ -157,3 +157,12 @@ main,footer{position:relative;z-index:1}
   .book{grid-template-columns:1fr;gap:var(--s6);padding:var(--s12) var(--gutter)}
   .book-form{padding:var(--s3)}
 }
+
+/* hero backdrop: the real balcony, fading into the blush page */
+.hero-pin{overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:-1;will-change:transform}
+.hero-bg::after{content:"";position:absolute;inset:0;background:
+  linear-gradient(to bottom, rgba(248,236,240,0) 0%, rgba(248,236,240,.2) 50%, var(--cream) 97%),
+  linear-gradient(to right, rgba(248,236,240,.6) 0%, rgba(248,236,240,0) 50%)}
+.hero-pin>*:not(.hero-bg){position:relative}
+.hero-pin>.floor,.hero-pin>.hbadge{position:absolute}
