@@ -12,8 +12,9 @@ if (!reduced) {
 
 /* ---------- WebGL: the painted flower blooms ---------- */
 const canvas = document.getElementById('gl');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+const mobile = matchMedia('(max-width: 820px), (pointer: coarse)').matches;
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: !mobile, alpha: true, powerPreference: mobile ? 'low-power' : 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, mobile ? 1.5 : 2));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
@@ -107,7 +108,9 @@ function resize() {
   flower.position.set(wide ? 1.9 : 0, wide ? 0.4 : 0.9, 0);
   flower.scale.setScalar(wide ? 1 : 0.7);
 }
-addEventListener('resize', resize); resize();
+let lastW = innerWidth;
+addEventListener('resize', () => { if (innerWidth !== lastW || !mobile) { lastW = innerWidth; resize(); } });
+resize();
 
 const state = { bloom: reduced ? 1 : 0, scatter: 0, page: 0 };
 ScrollTrigger.create({
@@ -126,6 +129,7 @@ const ease = t => 1 - Math.pow(1 - t, 3);
 const sm = { bloom: state.bloom, scatter: 0 };
 let last = performance.now(), time = 0;
 function frame(now) {
+  if (document.hidden) { last = now; requestAnimationFrame(frame); return; }
   const dt = Math.min((now - last) / 1000, 0.05); last = now; time += dt; // clamp: no jump after tab is hidden
   mouse.x += (mouse.tx - mouse.x) * 0.06; mouse.y += (mouse.ty - mouse.y) * 0.06;
   sm.bloom += (state.bloom - sm.bloom) * 0.08; sm.scatter += (state.scatter - sm.scatter) * 0.08;
@@ -182,8 +186,6 @@ ScrollTrigger.create({ trigger: '#hero', start: 'top top', end: '65% bottom', on
 if (reduced) floorN.textContent = 4;
 
 if (!reduced) {
-  gsap.from('.hero-title .line>span', { yPercent: 110, duration: 1.2, ease: 'expo.out', stagger: 0.12, delay: 0.2 });
-  gsap.from('.hero-kicker, .hero-sub, .floor', { opacity: 0, y: 20, duration: 1, delay: 0.7, stagger: 0.1 });
   gsap.to('.hero-pin > *', { scrollTrigger: { trigger: '#hero', start: '75% bottom', end: 'bottom bottom', scrub: true }, opacity: 0, y: -40 });
   // marquee driven by scroll
   gsap.to('.band-track', { xPercent: -50, ease: 'none', scrollTrigger: { trigger: '.band', start: 'top bottom', end: 'bottom top', scrub: 0.6 } });
