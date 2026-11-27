@@ -212,15 +212,6 @@ document.querySelectorAll('[data-count]').forEach(el => {
   if (!reduced) gsap.to(o, { v: to, duration: 1.6, ease: 'power2.out', onUpdate: put, scrollTrigger: { trigger: el, start: 'top 85%' } });
 });
 
-// hero cards drift with scroll + pointer (depth)
-if (!reduced) {
-  [['.c1', -120, 1], ['.c2', -220, 1.6], ['.c3', -80, 0.8], ['.hbadge', -160, 1.2]].forEach(([sel, y, depth]) => {
-    gsap.to(sel, { y, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom bottom', scrub: 0.6 } });
-    const el = document.querySelector(sel);
-    addEventListener('pointermove', e => gsap.to(el, { x: (e.clientX / innerWidth - 0.5) * -24 * depth, duration: 1, ease: 'power2.out', overwrite: 'auto' }));
-  });
-  gsap.from('.hcard, .hbadge', { opacity: 0, scale: 0.85, duration: 1.2, ease: 'expo.out', stagger: 0.12, delay: 0.5 });
-}
 
 // demo booking + payment (no real charge)
 const form = document.getElementById('bookForm');
